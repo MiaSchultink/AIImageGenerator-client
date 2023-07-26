@@ -46,7 +46,7 @@ const NewPassword = () => {
       }
     };
     getUser();
-  }, [token, sendRequest]);
+  }, [token, sendRequest]); 
   const submitHandler = async (event) => {
     event.preventDefault();
     try {
