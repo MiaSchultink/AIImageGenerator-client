@@ -28,7 +28,7 @@ const UserProfile = () => {
   useEffect(() => {
     const getUser = async () => {
       const response = await sendRequest(
-        `http://localhost:5000/api/users/${userId}`,
+        `/users/${userId}`,
         "GET",
         null,
         {

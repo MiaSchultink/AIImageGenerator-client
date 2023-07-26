@@ -30,7 +30,7 @@ const MaskImage = () => {
   useEffect(() => {
     const getImage = async () => {
       const res = await sendRequest(
-        `http://localhost:5000/api/image/${imageId}`,
+        `/image/${imageId}`,
         "GET",
         null,
         { "Content-Type": "application/json" }
@@ -50,7 +50,7 @@ const MaskImage = () => {
     event.preventDefault();
     try {
       await sendRequest(
-        `http://localhost:5000/api/image/mask/${imageId}`,
+        `/image/mask/${imageId}`,
         "POST",
         JSON.stringify({
           maskImage: maskImage,

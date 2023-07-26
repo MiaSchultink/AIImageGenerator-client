@@ -1,7 +1,7 @@
 export const host =
   process.env.NODE_ENV === "development"
-    ? process.env.DEV_HOST
-    : process.env.PROD_HOST;
+    ? 'http://localhost:5000/api'
+    : 'http://miaschultink.com';
 export const aspects = ["1X1", "16X9", "4X3", "2X1", "3X4"];
 export const colors = [
   "green",

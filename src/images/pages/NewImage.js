@@ -105,7 +105,7 @@ const NewImage = () => {
     event.preventDefault();
     try {
       await sendRequest(
-        "http://localhost:5000/api/image/new",
+        "/image/new",
         "POST",
         JSON.stringify({
           imageName: formState.inputs.imageName.value,

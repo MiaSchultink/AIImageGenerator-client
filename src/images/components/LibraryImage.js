@@ -14,7 +14,7 @@ const LibraryImage = (props) => {
     event.preventDefault();
     try {
       await sendRequest(
-        `http://localhost:5000/api/image/${props.imgId}`,
+        `/image/${props.imgId}`,
         "GET",
         null,
         {

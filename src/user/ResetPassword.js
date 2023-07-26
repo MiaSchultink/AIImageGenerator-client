@@ -29,7 +29,7 @@ const ResetPassword = () => {
   const submitHandler = async (event) => {
     event.preventDefault();
     try {
-      const responseData = await sendRequest("http://localhost:5000/api/users/reset", "POST", JSON.stringify({email: formState.inputs.email.value}), {
+      const responseData = await sendRequest("/users/reset", "POST", JSON.stringify({email: formState.inputs.email.value}), {
         "Content-Type": "application/json",
         Authorization: "Bearer " + auth.token,
       });

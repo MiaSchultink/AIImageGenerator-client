@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { host } from '../util/host';
+import { host } from '../util/utilVars';
 
 export const useHttpClient = () => {
 

@@ -16,7 +16,7 @@ const DeleteWarning = (props) => {
     event.preventDefault();
     const cancelFunction = props.cancel;
     cancelFunction();
-    let url = "http://localhost:5000/api";
+    let url = "";
     let body = null;
     switch (props.type) {
       case "image":

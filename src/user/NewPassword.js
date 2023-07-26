@@ -34,7 +34,7 @@ const NewPassword = () => {
     const getUser = async () => {
       try {
         const responseData =await sendRequest(
-          `http://localhost:5000/api/users/new-password/${token}`,
+          `/new-password/${token}`,
           "GET",
           null,
           { "Content-Type": "application/json" }
@@ -51,7 +51,7 @@ const NewPassword = () => {
     event.preventDefault();
     try {
       await sendRequest(
-        `http://localhost:5000/api/users/new-password/${token}`,
+        `/users/new-password/${token}`,
         "POST",
         JSON.stringify({
           password: formState.inputs.newPassword.value,

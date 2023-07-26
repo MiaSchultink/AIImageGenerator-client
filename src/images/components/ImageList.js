@@ -12,7 +12,7 @@ const ImageList = (props) => {
 
   const cardClickHandler = async (id) => {
     try {
-      await sendRequest(`http://localhost:5000/api/image/${id}`, "GET", null, {
+      await sendRequest(`/image/${id}`, "GET", null, {
         "Content-Type": "application/json",
       });
       navigate(`/image/${id}`);

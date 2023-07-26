@@ -31,7 +31,7 @@ const SingleImage = () => {
   useEffect(() => {
     const getImage = async () => {
       const res = await sendRequest(
-        `http://localhost:5000/api/image/${imageId}`,
+        `/image/${imageId}`,
         "GET",
         null,
         { "Content-Type": "application/json" }
@@ -46,7 +46,7 @@ const SingleImage = () => {
     event.preventDefault();
     try {
       await sendRequest(
-        `http://localhost:5000/api/image/upscale/${imageId}`,
+        `/image/upscale/${imageId}`,
         "POST",
         null,
         {

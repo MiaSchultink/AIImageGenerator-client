@@ -24,7 +24,7 @@ const EditImage = () => {
   useEffect(() => {
     const getImage = async () => {
       const response = await sendRequest(
-        `http://localhost:5000/api/image/${imageId}`,
+        `/image/${imageId}`,
         "GET",
         null,
         { "Content-Type": "application/json" }
@@ -46,7 +46,7 @@ const EditImage = () => {
     event.preventDefault();
     try {
       await sendRequest(
-        `http://localhost:5000/api/image/correct/${imageId}`,
+        `/image/correct/${imageId}`,
         "POST",
         JSON.stringify({
           correctingInfo: formState.inputs.correctingInfo.value,

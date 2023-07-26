@@ -92,7 +92,7 @@ const Auth = () => {
     } else {
       try {
         const responseData = await sendRequest(
-          "http://localhost:5000/api/users/signup",
+          "/users/signup",
           "POST",
           JSON.stringify({
             name: formState.inputs.name.value,
