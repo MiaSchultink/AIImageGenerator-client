@@ -1,0 +1,1 @@
+export const views = ['side','front','back']

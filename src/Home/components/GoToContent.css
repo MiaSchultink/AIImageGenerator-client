@@ -1,0 +1,13 @@
+.go-to-content__container{
+    width: 300px;
+    height: 200px;
+    border-radius: 10px;
+    border-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin: 10px;
+    padding: 10px;
+}

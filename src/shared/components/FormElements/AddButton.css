@@ -1,0 +1,19 @@
+.form-add-btn{
+    background-color: #3282B8;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    color: white;
+    border-color: transparent;
+    font-size: 20px;
+}
+
+.form-add-btn:hover,
+.form-add-btn:active{
+    background-color: #BBE1FA;
+}
+
+.form-add-btn--inverse{
+    background-color: #171a1b;
+    border: 2px solid #3282B8;
+}

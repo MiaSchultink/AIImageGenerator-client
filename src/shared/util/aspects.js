@@ -1,0 +1,1 @@
+export const aspects = ['1X1', '16X9', '4X3', '2X1', '3X4'];

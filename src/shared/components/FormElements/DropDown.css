@@ -1,0 +1,12 @@
+.drop-down{
+    height: 30px;
+    width: 100px;
+    background-color: #333638;
+    border-color: transparent;
+    border-radius: 5px;
+    color: white;
+}
+
+.drop-label{
+    margin-right: 5px;
+}

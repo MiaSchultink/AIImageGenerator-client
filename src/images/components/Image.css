@@ -1,0 +1,9 @@
+.lib-img{
+    margin:10px;
+    border-radius: 10px;
+}
+
+.single-img{
+    border-radius: 10px;
+    border-color: transparent;
+}
