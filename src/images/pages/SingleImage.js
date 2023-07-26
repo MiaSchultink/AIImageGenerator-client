@@ -126,6 +126,7 @@ const SingleImage = () => {
                 show={showDelete}
                 cancel={cancelWarning}
                 imgId={image._id}
+                type="image"
               ></DeleteWarning>
               <Button size="small" to={`/image/correct/${image._id}`}>CORRECT</Button>
               <form onSubmit={upscaleSubmitHandler}>

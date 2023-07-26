@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { host } from '../util/host';
 
 export const useHttpClient = () => {
 
@@ -14,6 +15,8 @@ export const useHttpClient = () => {
       activeHttpRequests.current.push(httpAbortCtrl);
 
       try {
+        console.log(host)
+        url = host + url;
         const response = await fetch(url, {
           method,
           body,

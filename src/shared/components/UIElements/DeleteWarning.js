@@ -5,35 +5,49 @@ import Modal from "./Modal";
 import Button from "../FormElements/Button";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "./LoadingSpinner";
+import ErrorModal from "./ErrorModal";
 
-const DeleteWarning = (props) =>{
-    const { isLoading, error, sendRequest, clearError } = useHttpClient();
-    const auth = useContext(AuthContext);
-    const navigate = useNavigate()
+const DeleteWarning = (props) => {
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const auth = useContext(AuthContext);
+  const navigate = useNavigate();
 
-    const confirmDelete = async (event) =>{
-        event.preventDefault();
-        const cancelFunction = props.cancel;
-        cancelFunction();
-        try {
-          await sendRequest(
-            `http://localhost:5000/api/image/delete/${props.imgId}`,
-            "POST",
-            null,
-            {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + auth.token,
-            }
-          );
-          navigate('/image/library')
-        } catch (err) {
-          console.log(err);
-        }
+  const confirmDelete = async (event) => {
+    event.preventDefault();
+    const cancelFunction = props.cancel;
+    cancelFunction();
+    let url = "http://localhost:5000/api";
+    let body = null;
+    switch (props.type) {
+      case "image":
+        url += `/image/delete${props.id}`;
+        break;
+      case "user":
+        url += "/users/delete";
+        body= JSON.stringify({userId: auth.userId})
+        auth.logout()
+        break;
     }
+    try {
+      await sendRequest(
+        url,
+        "POST",
+        body,
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + auth.token,
+        }
+      );
+      navigate("/image/library");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-    return(
-        <React.Fragment>
-        {isLoading &&  <LoadingSpinner asOverlay></LoadingSpinner>}
+  return (
+    <React.Fragment>
+      {isLoading && <LoadingSpinner asOverlay></LoadingSpinner>}
+      <ErrorModal error={error} onClear={clearError}></ErrorModal>
       <Modal
         show={props.show}
         onCancel={props.cancel}
@@ -51,12 +65,12 @@ const DeleteWarning = (props) =>{
         }
       >
         <p>
-          Do you want to proceed and delete this image? Please note that this
-          cannot be undone.
+          {`Do you want to proceed and delete this ${props.type}? Please note that this
+          cannot be undone`}.
         </p>
       </Modal>
-      </React.Fragment>
-    )
-}
+    </React.Fragment>
+  );
+};
 
 export default DeleteWarning;
