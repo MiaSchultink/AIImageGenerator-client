@@ -30,7 +30,6 @@ const EditImage = () => {
         { "Content-Type": "application/json" }
       );
       setImage(response.image);
-      console.log(response.image);
     };
     getImage();
   }, [imageId, sendRequest]);

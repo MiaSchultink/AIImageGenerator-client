@@ -46,6 +46,10 @@ const NewImage = () => {
         value: "",
         isValid: false,
       },
+      uploadedImage: {
+        value: "",
+        isValid: false,
+      },
       colors: {
         value: [],
         isValid: false,
@@ -93,7 +97,6 @@ const NewImage = () => {
   };
 
   const publishHandler = (newValue) => {
-    console.log(newValue);
     if (newValue === "on") {
       setPublished(true);
     } else {
@@ -111,6 +114,7 @@ const NewImage = () => {
           imageName: formState.inputs.imageName.value,
           imagePrompt: formState.inputs.imagePrompt.value,
           aspectRatio: formState.selects.aspectRatio.value,
+          uploadedImage: formState.inputs.uploadedImage,
           colors: colorsSelected,
           themes: themesSelected,
           published: published,
@@ -133,6 +137,7 @@ const NewImage = () => {
       {isLoading && <LoadingSpinner asOverlay></LoadingSpinner>}
       <Card className="general-container">
         <Card>
+          {console.log(formState.inputs)}
           <h2>New Image</h2>
           <form onSubmit={submitHandler}>
             <Input
@@ -157,6 +162,17 @@ const NewImage = () => {
               errorText={"Please enter a valid prompt"}
               onInput={inputHandler}
               placeholder="Image of a european forest during daylight in the winter"
+            ></Input>
+            <Input
+              element="input"
+              key="uploadedImage"
+              type="file"
+              name="uploadedImage"
+              id="uploadedImage"
+              label="Upload Image"
+              validators={[]}
+              errorText={"Please upload a valid image"}
+              onInput={inputHandler}
             ></Input>
             <FormSection>
               <DropDown

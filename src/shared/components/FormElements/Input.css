@@ -48,3 +48,9 @@
     border-color: red;
     background: #333638;
   }
+
+  input[type="file"]{
+    background-color: transparent;
+    border-color: transparent;
+    width: fit-content;
+  }

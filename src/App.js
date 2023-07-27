@@ -54,6 +54,11 @@ function App() {
           exact
           element={<ResetPassword></ResetPassword>}
         ></Route>
+         <Route
+          path="/user/new-password/:token"
+          exact
+          element={<NewPassword></NewPassword>}
+        ></Route>
       </React.Fragment>
     );
   } else {

@@ -20,7 +20,7 @@ const DeleteWarning = (props) => {
     let body = null;
     switch (props.type) {
       case "image":
-        url += `/image/delete${props.id}`;
+        url += `/image/delete/${props.id}`;
         break;
       case "user":
         url += "/users/delete";

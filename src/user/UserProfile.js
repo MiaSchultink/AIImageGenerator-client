@@ -51,11 +51,7 @@ const UserProfile = () => {
             {user.email && <div className="user-det">{user.email}</div>}
             {user.plan && <div className="user-det">{user.plan}</div>}
           </div>
-          {user.images && (
-            <div className="images-container">
-              <ImageList images={user.images}></ImageList>
-            </div>
-          )}
+          <div className="user-det">
           <Button to="/user/edit-profile">EDIT</Button>
           <DeleteWarning
             show={showDelete}
@@ -65,6 +61,12 @@ const UserProfile = () => {
           <Button danger inverse onClick={showWarning}>
             DELETE
           </Button>
+          </div>
+          {user.images && (
+            <div className="images-container">
+              <ImageList images={user.images}></ImageList>
+            </div>
+          )}
         </Card>
       )}
     </React.Fragment>

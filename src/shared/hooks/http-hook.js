@@ -15,7 +15,6 @@ export const useHttpClient = () => {
       activeHttpRequests.current.push(httpAbortCtrl);
 
       try {
-        console.log(host)
         url = host + url;
         const response = await fetch(url, {
           method,

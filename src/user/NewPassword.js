@@ -34,12 +34,11 @@ const NewPassword = () => {
     const getUser = async () => {
       try {
         const responseData =await sendRequest(
-          `/new-password/${token}`,
+          `/users/new-password/${token}`,
           "GET",
           null,
           { "Content-Type": "application/json" }
         );
-        console.log(responseData)
         setUserId(responseData.user._id)
       } catch (err) {
         console.log(err);

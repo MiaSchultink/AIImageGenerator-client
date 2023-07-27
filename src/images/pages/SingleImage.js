@@ -125,7 +125,7 @@ const SingleImage = () => {
               <DeleteWarning
                 show={showDelete}
                 cancel={cancelWarning}
-                imgId={image._id}
+                id={image._id}
                 type="image"
               ></DeleteWarning>
               <Button size="small" to={`/image/correct/${image._id}`}>CORRECT</Button>
