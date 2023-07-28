@@ -18,6 +18,7 @@ import { colors } from "../../shared/util/colors";
 import { themes } from "../../shared/util/themes";
 import { aspects } from "../../shared/util/aspects";
 import { styles } from "../../shared/util/styles";
+import FileInput from "../../shared/components/FormElements/FileInput";
 
 const NewImage = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -27,6 +28,7 @@ const NewImage = () => {
   const [themesSelected, setThemesSelected] = useState([]);
   const [colorsSelected, setColorsSelected] = useState([]);
   const [published, setPublished] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState();
 
   useEffect(() => {
     console.log(colorsSelected);
@@ -43,10 +45,6 @@ const NewImage = () => {
         isValid: false,
       },
       imagePrompt: {
-        value: "",
-        isValid: false,
-      },
-      uploadedImage: {
         value: "",
         isValid: false,
       },
@@ -86,6 +84,10 @@ const NewImage = () => {
     }
   };
 
+  const handleFileUpload = (file) => {
+    setUploadedImage(file);
+  };
+
   const colorChangeHandler = (newColor) => {
     if (!colorsSelected.includes(newColor) || colorsSelected.length === 0) {
       setColorsSelected((prevColors) => [...prevColors, newColor]);
@@ -106,25 +108,40 @@ const NewImage = () => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
+    console.log(uploadedImage)
     try {
-      await sendRequest(
+      const body = JSON.stringify({
+        imageName: formState.inputs.imageName.value,
+        imagePrompt: formState.inputs.imagePrompt.value,
+        aspectRatio: formState.selects.aspectRatio.value,
+        uploadedImage: uploadedImage,
+        colors: colorsSelected,
+        themes: themesSelected,
+        published: published,
+        style: formState.selects.style.value,
+      })
+
+      const formData = new FormData();
+      formData.append("imageName", formState.inputs.imageName.value)
+      formData.append("imagePrompt", formState.inputs.imagePrompt.value)
+      formData.append("aspectRatio", formState.selects.aspectRatio.value)
+      formData.append("uploadedImage", uploadedImage)
+      formData.append("colors", colorsSelected)
+      formData.append("themes", themesSelected)
+      formData.append("published", published)
+      formData.append("sytle", formState.selects.style.value)
+
+      console.log(formData)
+      const responseData = await sendRequest(
         "/image/new",
         "POST",
-        JSON.stringify({
-          imageName: formState.inputs.imageName.value,
-          imagePrompt: formState.inputs.imagePrompt.value,
-          aspectRatio: formState.selects.aspectRatio.value,
-          uploadedImage: formState.inputs.uploadedImage,
-          colors: colorsSelected,
-          themes: themesSelected,
-          published: published,
-          style: formState.selects.style.value,
-        }),
+        formData,
         {
           "Content-Type": "application/json",
           Authorization: "Bearer " + auth.token,
         }
       );
+      console.log(responseData)
       navigate("/image/library");
     } catch (err) {
       console.log(err);
@@ -137,9 +154,9 @@ const NewImage = () => {
       {isLoading && <LoadingSpinner asOverlay></LoadingSpinner>}
       <Card className="general-container">
         <Card>
-          {console.log(formState.inputs)}
           <h2>New Image</h2>
           <form onSubmit={submitHandler}>
+            {console.log('image', uploadedImage)}
             <Input
               element="input"
               key="imageName"
@@ -163,17 +180,10 @@ const NewImage = () => {
               onInput={inputHandler}
               placeholder="Image of a european forest during daylight in the winter"
             ></Input>
-            <Input
-              element="input"
-              key="uploadedImage"
-              type="file"
-              name="uploadedImage"
-              id="uploadedImage"
-              label="Upload Image"
-              validators={[]}
-              errorText={"Please upload a valid image"}
-              onInput={inputHandler}
-            ></Input>
+            <FileInput
+              onChange={handleFileUpload}
+              onUpload={handleFileUpload}
+            ></FileInput>
             <FormSection>
               <DropDown
                 id="style"
