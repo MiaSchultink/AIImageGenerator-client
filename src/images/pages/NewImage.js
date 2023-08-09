@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
-import { useNavigate } from "react-router-dom";
+import { json, useNavigate } from "react-router-dom";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
 import Card from "../../shared/components/UIElements/Card";
@@ -84,9 +84,15 @@ const NewImage = () => {
     }
   };
 
-  const handleFileUpload = (file) => {
-    setUploadedImage(file);
-  };
+  const handleFileUpload = useCallback((event) => {
+    // let reader = new FileReader()
+    // reader.readAsDataURL(event.target.files[0])
+    // reader.onload = () => {
+    //  setUploadedImage(reader.result)
+    event.preventDefault();
+    const fileOject = event.target.files[0];
+    setUploadedImage(fileOject);
+  }, []);
 
   const colorChangeHandler = (newColor) => {
     if (!colorsSelected.includes(newColor) || colorsSelected.length === 0) {
@@ -106,43 +112,42 @@ const NewImage = () => {
     }
   };
 
-  const submitHandler = async (event) => {
-    event.preventDefault();
-    console.log(uploadedImage)
+  
+  const submitHandler = (event) =>{
+    event.preventDefault()
+    if (uploadedImage) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const fileString = reader.result; // String representation of the file object
+        sendToServer(fileString);
+      };
+      reader.readAsDataURL(uploadedImage);
+    }
+  }
+
+  const sendToServer = async (stringFile) => {
     try {
+      console.log("submited image", stringFile);
       const body = JSON.stringify({
         imageName: formState.inputs.imageName.value,
         imagePrompt: formState.inputs.imagePrompt.value,
         aspectRatio: formState.selects.aspectRatio.value,
-        uploadedImage: uploadedImage,
         colors: colorsSelected,
         themes: themesSelected,
-        published: published,
         style: formState.selects.style.value,
-      })
+        uploadedImage: stringFile,
+        published: published,
+      });
 
-      const formData = new FormData();
-      formData.append("imageName", formState.inputs.imageName.value)
-      formData.append("imagePrompt", formState.inputs.imagePrompt.value)
-      formData.append("aspectRatio", formState.selects.aspectRatio.value)
-      formData.append("uploadedImage", uploadedImage)
-      formData.append("colors", colorsSelected)
-      formData.append("themes", themesSelected)
-      formData.append("published", published)
-      formData.append("sytle", formState.selects.style.value)
-
-      console.log(formData)
-      const responseData = await sendRequest(
-        "/image/new",
-        "POST",
-        formData,
-        {
+      try {
+        await sendRequest("/image/new", "POST", body, {
           "Content-Type": "application/json",
           Authorization: "Bearer " + auth.token,
-        }
-      );
-      console.log(responseData)
-      navigate("/image/library");
+        });
+        navigate('/image/library')
+      } catch (err) {
+        console.log(err);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -156,7 +161,7 @@ const NewImage = () => {
         <Card>
           <h2>New Image</h2>
           <form onSubmit={submitHandler}>
-            {console.log('image', uploadedImage)}
+            {console.log("image", uploadedImage)}
             <Input
               element="input"
               key="imageName"
@@ -180,10 +185,13 @@ const NewImage = () => {
               onInput={inputHandler}
               placeholder="Image of a european forest during daylight in the winter"
             ></Input>
-            <FileInput
+            <input
+              type="file"
+              name="uploadedImage"
+              id="uploadedImage"
               onChange={handleFileUpload}
-              onUpload={handleFileUpload}
-            ></FileInput>
+              accept="image/png, image/jpeg"
+            ></input>
             <FormSection>
               <DropDown
                 id="style"

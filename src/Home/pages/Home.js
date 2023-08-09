@@ -16,7 +16,8 @@ const Home = () => {
           padding: "10px",
           flexWrap: "wrap",
         }}>
-          <h2>Hello</h2>
+          <GoToContent url="/image/new" backgroundColor="#333638">Create New Image</GoToContent>
+          <GoToContent url="/image/library" backgroundColor="#333638">Get Inspiration</GoToContent>
       </Card>
     </React.Fragment>
   );
