@@ -45,7 +45,6 @@ const DropDown = (props) => {
       <label
         htmlFor={props.id}
         className="drop-label"
-        defaultValue={props.defVal}
       >
         {props.label}
       </label>
@@ -53,8 +52,7 @@ const DropDown = (props) => {
         className="drop-down"
         name={props.name}
         id={props.id}
-        // value={selectedOption}
-        // onChange={selectHandler}
+        defaultValue={props.defVal}
         onChange={props.onChange || changeHandler}
         value={selectState.value}
       >
@@ -64,6 +62,7 @@ const DropDown = (props) => {
           </option>
         ))}
       </select>
+      <label htmlFor={props.id} className="input-sublabel">{props.sublabel}</label>
     </React.Fragment>
   );
 };

@@ -57,7 +57,7 @@ const Input = (props) => {
         placeholder={props.placeholder}
         onChange={props.onChange || changeHandler}
         onBlur={touchHandler}
-        value={inputState.value}
+        value={inputState.value || props.value}
         name={props.name}
       ></input>
     );
@@ -94,6 +94,7 @@ const Input = (props) => {
       }`}
     >
       <label htmlFor={props.id}>{props.label}</label>
+      <label className="input-sublabel" htmlFor={props.id}>{props.sublabel}</label>
       {element}
       {!inputState.isValid && inputState.isTouched && <p>{props.errorText}</p>}
     </div>

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { useForm } from "../../shared/hooks/form-hooks";
@@ -41,19 +41,32 @@ const MaskImage = () => {
     getImage();
   }, [imageId, sendRequest]);
 
-  const fileChangeHandler = async (event) => {
-    const file = event.target.files[0];
-    setMaskImage(file);
-  };
 
-  const maskSubmitHandler = async (event) => {
+  const handleFileUpload = useCallback((event) => {
     event.preventDefault();
+    const fileOject = event.target.files[0];
+    setMaskImage(fileOject);
+  }, []);
+
+  const submitHandler = (event) =>{
+    event.preventDefault()
+    if (maskImage) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const imageString = reader.result; // String representation of the file object
+        sendToServer(imageString);
+      };
+      reader.readAsDataURL(maskImage);
+    }
+  }
+
+  const sendToServer = async (imageString) => {
     try {
       await sendRequest(
         `/image/mask/${imageId}`,
         "POST",
         JSON.stringify({
-          maskImage: maskImage,
+          maskImage: imageString,
           maskPrompt: formState.inputs.maskPrompt.value,
         }),
         {
@@ -74,7 +87,7 @@ const MaskImage = () => {
       <Card className="genera-container">
         {originalImage && (
           <Card>
-            <form onSubmit={maskSubmitHandler}>
+            <form onSubmit={submitHandler}>
               <Image
                 base64={originalImage.base64}
                 width="200px"
@@ -92,12 +105,12 @@ const MaskImage = () => {
                 placeholder="An image of a sea seen from a clif at sunset"
               ></Input>
               <input
-                type="file"
-                className="file-input"
-                name="maskImage"
-                id="maskImage"
-                onChange={fileChangeHandler}
-              ></input>
+              type="file"
+              name="maskImage"
+              id="maskImage"
+              onChange={handleFileUpload}
+              accept="image/png, image/jpeg"
+            ></input>
               <Button type="submit">MASK</Button>
             </form>
           </Card>

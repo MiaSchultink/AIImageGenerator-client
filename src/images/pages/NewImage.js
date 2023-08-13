@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
-import { json, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
 import Card from "../../shared/components/UIElements/Card";
@@ -18,7 +18,7 @@ import { colors } from "../../shared/util/colors";
 import { themes } from "../../shared/util/themes";
 import { aspects } from "../../shared/util/aspects";
 import { styles } from "../../shared/util/styles";
-import FileInput from "../../shared/components/FormElements/FileInput";
+import PromptSuggestion from "../../shared/components/FormElements/PromptSuggestion";
 
 const NewImage = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -29,6 +29,8 @@ const NewImage = () => {
   const [colorsSelected, setColorsSelected] = useState([]);
   const [published, setPublished] = useState(false);
   const [uploadedImage, setUploadedImage] = useState();
+  const [generatedSuggestion, setGeneratedSuggestion] = useState();
+  const [showSuggestion, setShowSuggestion] = useState(false);
 
   useEffect(() => {
     console.log(colorsSelected);
@@ -37,6 +39,16 @@ const NewImage = () => {
   useEffect(() => {
     console.log(themesSelected);
   }, [themesSelected]);
+
+  const [formState2, inputHandler2] = useForm(
+    {
+      userPrompt: {
+        value: "",
+        isValid: false,
+      },
+    },
+    false
+  );
 
   const [formState, inputHandler, setFormData, selectHandler] = useForm(
     {
@@ -74,6 +86,8 @@ const NewImage = () => {
     }
   );
 
+  useEffect(() => {}, [formState]);
+
   const themeChangeHandler = (newTheme) => {
     if (!themesSelected.includes(newTheme) || themesSelected.length === 0) {
       setThemesSelected((prevThemes) => [...prevThemes, newTheme]);
@@ -85,10 +99,6 @@ const NewImage = () => {
   };
 
   const handleFileUpload = useCallback((event) => {
-    // let reader = new FileReader()
-    // reader.readAsDataURL(event.target.files[0])
-    // reader.onload = () => {
-    //  setUploadedImage(reader.result)
     event.preventDefault();
     const fileOject = event.target.files[0];
     setUploadedImage(fileOject);
@@ -112,9 +122,34 @@ const NewImage = () => {
     }
   };
 
-  
-  const submitHandler = (event) =>{
-    event.preventDefault()
+  const showSuggestionHandler = (event) => {
+    event.preventDefault();
+    setShowSuggestion((prevShow) => !prevShow);
+  };
+
+  const suggestionChangeHandler = (suggestion) => {
+    setGeneratedSuggestion(suggestion);
+  };
+
+  const useSuggestionHandler = (event) => {
+    event.preventDefault();
+    console.log("clicked");
+    setFormData(
+      {
+        ...formState.inputs,
+        imagePrompt: {
+          value: generatedSuggestion,
+          isValid: true,
+        },
+      },
+      { ...formState.selects },
+      formState.isValid
+    );
+    console.log(formState);
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
     if (uploadedImage) {
       const reader = new FileReader();
       reader.onload = () => {
@@ -122,12 +157,13 @@ const NewImage = () => {
         sendToServer(fileString);
       };
       reader.readAsDataURL(uploadedImage);
+    } else {
+      sendToServer(undefined);
     }
-  }
+  };
 
   const sendToServer = async (stringFile) => {
     try {
-      console.log("submited image", stringFile);
       const body = JSON.stringify({
         imageName: formState.inputs.imageName.value,
         imagePrompt: formState.inputs.imagePrompt.value,
@@ -144,7 +180,7 @@ const NewImage = () => {
           "Content-Type": "application/json",
           Authorization: "Bearer " + auth.token,
         });
-        navigate('/image/library')
+        navigate("/image/library");
       } catch (err) {
         console.log(err);
       }
@@ -160,8 +196,25 @@ const NewImage = () => {
       <Card className="general-container">
         <Card>
           <h2>New Image</h2>
+          {console.log(formState2)}
+          <a
+            style={{
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            onClick={showSuggestionHandler}
+          >
+            {!showSuggestion
+              ? "Having trouble coming up with a prompt?"
+              : "Hide suggestion box"}
+          </a>
+          {showSuggestion && (
+            <PromptSuggestion
+              useSuggestion={useSuggestionHandler}
+              sendDataToParent={suggestionChangeHandler}
+            ></PromptSuggestion>
+          )}
           <form onSubmit={submitHandler}>
-            {console.log("image", uploadedImage)}
             <Input
               element="input"
               key="imageName"
@@ -185,13 +238,18 @@ const NewImage = () => {
               onInput={inputHandler}
               placeholder="Image of a european forest during daylight in the winter"
             ></Input>
-            <input
-              type="file"
-              name="uploadedImage"
-              id="uploadedImage"
-              onChange={handleFileUpload}
-              accept="image/png, image/jpeg"
-            ></input>
+            <FormSection>
+              <input
+                type="file"
+                name="uploadedImage"
+                id="uploadedImage"
+                onChange={handleFileUpload}
+                accept="image/png, image/jpeg"
+              ></input>
+              <label htmlFor="uploadedImage" className="input-sublabel">
+                [optional]
+              </label>
+            </FormSection>
             <FormSection>
               <DropDown
                 id="style"
@@ -199,7 +257,8 @@ const NewImage = () => {
                 label="Style"
                 options={styles}
                 onSelect={selectHandler}
-                defVal="photographic"
+                //defVal="photographic"
+                sublabel="[optional]"
               ></DropDown>
             </FormSection>
             <FormSection>
@@ -208,8 +267,9 @@ const NewImage = () => {
                 name="aspectRatio"
                 id="aspectRatio"
                 label="Aspect Ratio"
-                defVal="1X1"
+                //defVal="1X1"
                 onSelect={selectHandler}
+                sublabel="[optional]"
               ></DropDown>
             </FormSection>
             <FormSection>
