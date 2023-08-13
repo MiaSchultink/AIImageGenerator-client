@@ -52,10 +52,6 @@ const NewImage = () => {
 
   const [formState, inputHandler, setFormData, selectHandler] = useForm(
     {
-      imageName: {
-        value: "",
-        isValid: false,
-      },
       imagePrompt: {
         value: "",
         isValid: false,
@@ -165,7 +161,7 @@ const NewImage = () => {
   const sendToServer = async (stringFile) => {
     try {
       const body = JSON.stringify({
-        imageName: formState.inputs.imageName.value,
+        //imageName: formState.inputs.imageName.value,
         imagePrompt: formState.inputs.imagePrompt.value,
         aspectRatio: formState.selects.aspectRatio.value,
         colors: colorsSelected,
@@ -215,7 +211,7 @@ const NewImage = () => {
             ></PromptSuggestion>
           )}
           <form onSubmit={submitHandler}>
-            <Input
+            {/* <Input
               element="input"
               key="imageName"
               type="text"
@@ -226,7 +222,7 @@ const NewImage = () => {
               errorText={"Please enter a valid name"}
               onInput={inputHandler}
               placeholder="Image of horse"
-            ></Input>
+            ></Input> */}
             <Input
               key="imagePrompt"
               type="text"
