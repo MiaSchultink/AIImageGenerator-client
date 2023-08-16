@@ -12,7 +12,6 @@ import ImageLibrary from "./images/pages/ImageLibrary";
 import SingleImage from "./images/pages/SingleImage";
 import EditImage from "./images/pages/EditImage";
 import UserProfile from "./user/UserProfile";
-import MaskImage from "./images/pages/MaskImage";
 import ResetPassword from "./user/ResetPassword.js";
 import NewPassword from "./user/NewPassword";
 
@@ -38,11 +37,6 @@ function App() {
           path="/image/correct/:imageId"
           exact
           element={<EditImage></EditImage>}
-        ></Route>
-        <Route
-          path="/image/mask/:imageId"
-          exact
-          element={<MaskImage></MaskImage>}
         ></Route>
         <Route
           path="/user/profile"

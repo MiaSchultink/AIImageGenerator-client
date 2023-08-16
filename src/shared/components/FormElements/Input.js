@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer, useEffect, useCallback } from "react";
 
 import "./Input.css";
 import { validate } from "../../util/validators";
@@ -43,6 +43,14 @@ const Input = (props) => {
     });
   };
 
+  const handleFileUpload = useCallback((event) => {
+    dispatch({
+      type: 'CHANGE',
+      val: event.target.files[0],
+      validators: []
+    })
+  }, []);
+
   const touchHandler = () => {
     dispatch({ type: "TOUCH" });
   };
@@ -66,14 +74,28 @@ const Input = (props) => {
       <input
         id={props.id}
         type={props.type}
+        onChange={props.onChange || handleFileUpload}
+        onBlur={touchHandler}
+        value={inputState.value}
+        name={props.name}
+        checked={props.on} 
+      ></input>
+    );
+  } 
+  else if(element === 'fileInput'){
+    element = (
+      <input
+        id={props.id}
+        type={props.type}
         onChange={props.onChange || changeHandler}
         onBlur={touchHandler}
         value={inputState.value}
         name={props.name}
-        checked={props.on}
+        accept={props.accept}
       ></input>
     );
-  } else {
+  }
+  else {
     element = (
       <textarea
         id={props.id}

@@ -132,7 +132,6 @@ const SingleImage = () => {
               <form onSubmit={upscaleSubmitHandler}>
                 <Button size="small" type="submit">UPSCALE</Button>
               </form>
-              <Button size="small" to={`/image/mask/${image._id}`}>MASK</Button>
               <Button danger inverse onClick={showWarning} size="small">
                 DELETE
               </Button>

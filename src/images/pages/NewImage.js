@@ -18,7 +18,6 @@ import { colors } from "../../shared/util/colors";
 import { themes } from "../../shared/util/themes";
 import { aspects } from "../../shared/util/aspects";
 import { styles } from "../../shared/util/styles";
-import PromptSuggestion from "../../shared/components/FormElements/PromptSuggestion";
 
 const NewImage = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -29,8 +28,6 @@ const NewImage = () => {
   const [colorsSelected, setColorsSelected] = useState([]);
   const [published, setPublished] = useState(false);
   const [uploadedImage, setUploadedImage] = useState();
-  const [generatedSuggestion, setGeneratedSuggestion] = useState();
-  const [showSuggestion, setShowSuggestion] = useState(false);
 
   useEffect(() => {
     console.log(colorsSelected);
@@ -40,21 +37,15 @@ const NewImage = () => {
     console.log(themesSelected);
   }, [themesSelected]);
 
-  const [formState2, inputHandler2] = useForm(
-    {
-      userPrompt: {
-        value: "",
-        isValid: false,
-      },
-    },
-    false
-  );
-
   const [formState, inputHandler, setFormData, selectHandler] = useForm(
     {
       imagePrompt: {
         value: "",
         isValid: false,
+      },
+      uploadedImage:{
+        value: "",
+        isValid: false
       },
       colors: {
         value: [],
@@ -118,32 +109,6 @@ const NewImage = () => {
     }
   };
 
-  const showSuggestionHandler = (event) => {
-    event.preventDefault();
-    setShowSuggestion((prevShow) => !prevShow);
-  };
-
-  const suggestionChangeHandler = (suggestion) => {
-    setGeneratedSuggestion(suggestion);
-  };
-
-  const useSuggestionHandler = (event) => {
-    event.preventDefault();
-    console.log("clicked");
-    setFormData(
-      {
-        ...formState.inputs,
-        imagePrompt: {
-          value: generatedSuggestion,
-          isValid: true,
-        },
-      },
-      { ...formState.selects },
-      formState.isValid
-    );
-    console.log(formState);
-  };
-
   const submitHandler = (event) => {
     event.preventDefault();
     if (uploadedImage) {
@@ -161,7 +126,6 @@ const NewImage = () => {
   const sendToServer = async (stringFile) => {
     try {
       const body = JSON.stringify({
-        //imageName: formState.inputs.imageName.value,
         imagePrompt: formState.inputs.imagePrompt.value,
         aspectRatio: formState.selects.aspectRatio.value,
         colors: colorsSelected,
@@ -192,37 +156,7 @@ const NewImage = () => {
       <Card className="general-container">
         <Card>
           <h2>New Image</h2>
-          {console.log(formState2)}
-          <a
-            style={{
-              textDecoration: "underline",
-              cursor: "pointer",
-            }}
-            onClick={showSuggestionHandler}
-          >
-            {!showSuggestion
-              ? "Having trouble coming up with a prompt?"
-              : "Hide suggestion box"}
-          </a>
-          {showSuggestion && (
-            <PromptSuggestion
-              useSuggestion={useSuggestionHandler}
-              sendDataToParent={suggestionChangeHandler}
-            ></PromptSuggestion>
-          )}
           <form onSubmit={submitHandler}>
-            {/* <Input
-              element="input"
-              key="imageName"
-              type="text"
-              name="imageName"
-              id="imageName"
-              label="Image Name"
-              validators={[VALIDATOR_REQUIRE()]}
-              errorText={"Please enter a valid name"}
-              onInput={inputHandler}
-              placeholder="Image of horse"
-            ></Input> */}
             <Input
               key="imagePrompt"
               type="text"
@@ -235,7 +169,7 @@ const NewImage = () => {
               placeholder="Image of a european forest during daylight in the winter"
             ></Input>
             <FormSection>
-              <input
+              {/* <input
                 type="file"
                 name="uploadedImage"
                 id="uploadedImage"
@@ -244,7 +178,17 @@ const NewImage = () => {
               ></input>
               <label htmlFor="uploadedImage" className="input-sublabel">
                 [optional]
-              </label>
+              </label> */}
+              <Input
+                element="fileInput"
+                type="file"
+                name="uploadedImage"
+                id="uploadedImage"
+                accept="image/png, image/jpeg"
+                sublabel="[optional]"
+                validators={[]}
+                onInput={inputHandler}
+              ></Input>
             </FormSection>
             <FormSection>
               <DropDown
